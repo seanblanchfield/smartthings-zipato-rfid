@@ -139,15 +139,21 @@ metadata {
 	}
     
     preferences {
-        input name: "masterCode", type: "password", title: "Master Code", description: "MUST be different to any user codes.", displayDuringSetup: true
-        input name: "masterCodeTimeout", type: "number", title: "Master Code Timeout", description: "seconds", displayDuringSetup: true
-        input name: "wakeUpInterval", type: "number", title: "Wake up interval (minutes)", description: "Default: 240 minutes", range: "*..*", displayDuringSetup: false
-        //input name: "beepsPerSecond", type: "number", title: "Beeps per second", description: "2", range: "1..10", displayDuringSetup: false
-        //input name: "feedbackTime", type: "number", title: "Feedback period length", description: "Number of seconds to emit feedback for", range: "0..255", displayDuringSetup: false
-        //input name: "feedbackTimeout", type: "number", title: "Timeout", description: "Number of seconds to wait for response from controller", range: "1..30", displayDuringSetup: false
-        //input name: "setMode", type: "enum",  options: ["Normal", "Always On"], title: "Operating mode", description: "Always on will deplete battery", displayDuringSetup: false
-        //input name: "factoryReset", type: "enum",  options: ["Continue without reset", "Perform factory reset"], title: "Factory Reset", description: "Will reset to factory defaults. All registered RFID tag info will be lost.", displayDuringSetup: false
-        input name: "debugMode", type: "bool", title: "Debug mode", description: "Enabled detailed logging"
+    	section {
+			input title: "Master Code", description: "You need to set up a master code to use to wake up the device so you can register codes and tags with it. The master code can be up to ten characters (1,2,3 or 4 only), and should be different from any regular codes you use. Once the master code is entered, the master code timeout prevents the device immediately going back to sleep after waking up. This gives you time to register a new code, while the device is still awake. ", displayDuringSetup: false, type: "paragraph", element: "paragraph"
+            input name: "masterCode", type: "password", title: "Master Code", description: "MUST be different to any user codes.", displayDuringSetup: true
+            input name: "masterCodeTimeout", type: "number", title: "Master Code Timeout", description: "seconds", displayDuringSetup: true
+            input title: "Adding tags and codes", description: "To register a new code, press 'home' on your device and enter your master code. Immediately press 'home' again and either enter the code you want to add, or scan an RFID tag. Then press 'learn' on one of the empty slots in the main screen. You need to do this quickly, before the device goes back to sleep. To forget a code, enter your master code, and then click 'forget' on a used slot. If the device handler gets confused, wake it up with the master code and hit the 'refresh' button to reload configuration from the device.", displayDuringSetup: false, type: "paragraph", element: "paragraph"
+        }
+        section {
+            input name: "wakeUpInterval", type: "number", title: "Wake up interval (minutes)", description: "Default: 240 minutes", range: "*..*", displayDuringSetup: false
+            //input name: "beepsPerSecond", type: "number", title: "Beeps per second", description: "2", range: "1..10", displayDuringSetup: false
+            //input name: "feedbackTime", type: "number", title: "Feedback period length", description: "Number of seconds to emit feedback for", range: "0..255", displayDuringSetup: false
+            //input name: "feedbackTimeout", type: "number", title: "Timeout", description: "Number of seconds to wait for response from controller", range: "1..30", displayDuringSetup: false
+            //input name: "setMode", type: "enum",  options: ["Normal", "Always On"], title: "Operating mode", description: "Always on will deplete battery", displayDuringSetup: false
+            //input name: "factoryReset", type: "enum",  options: ["Continue without reset", "Perform factory reset"], title: "Factory Reset", description: "Will reset to factory defaults. All registered RFID tag info will be lost.", displayDuringSetup: false
+            input name: "debugMode", type: "bool", title: "Debug mode", description: "Enabled detailed logging"
+        }
     }
 }
 
