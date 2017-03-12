@@ -406,13 +406,13 @@ def zwaveEvent(physicalgraph.zwave.commands.usercodev1.UserCodeReport cmd) {
     else {
     	if (cmd.userIdStatus == UserCodeReport.USER_ID_STATUS_OCCUPIED) {
             info "Remembering user $userNumber is set to ${cmd.user}"
-            state.registeredUsers[userNumber] = cmd.user
+            state.registeredUsers[Integer.toString(userNumber)] = cmd.user
             sendEvent(name:"rfid$userNumber", value: "associated")
         }
         else if (cmd.userIdStatus == UserCodeReport.USER_ID_STATUS_AVAILABLE_NOT_SET){
             sendEvent(name:"rfid$userNumber", value: "unassociated")
             debug "Forgetting user $userNumber"
-            state.registeredUsers[userNumber] = null
+            state.registeredUsers[Integer.toString(userNumber)] = null
         }
         debug state.registeredUsers
     }
