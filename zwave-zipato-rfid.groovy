@@ -244,11 +244,17 @@ def updated() {
 }
 
 def on() {
-
+	if(device.currentState("switch").value == "off"){
+    	info "Switching mode to away"
+    	sendEvent(name:"switch", value: "on")
+    }
 }
 
 def off() {
-
+	if(device.currentState("switch").value == "on"){
+    	info "Switching mode to home"
+    	sendEvent(name:"switch", value: "off")
+    }
 }
 
 def parse(String description) {
