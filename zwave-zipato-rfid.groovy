@@ -1,6 +1,9 @@
 /**
  *  Copyright 2017 SEAN BLANCHFIELD
  *
+ *
+ * Additional code for 'Last Set By User', 'User Personalisation in Preferences' and 'Enable webCoRE Notifications' by Inpier 2017-04-11.
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
  *
@@ -24,12 +27,13 @@ import physicalgraph.zwave.commands.batteryv1.*
 
 metadata {
 	definition (name: "Z-Wave Zipato RFID Keypad", namespace: "seanblanchfield.com", author: "Sean Blanchfield") {
-		capability "Actuator"
-		capability "Sensor"
-		capability "Battery"
+    	capability "Actuator"
+    	capability "Sensor"
+    	capability "Battery"
         capability "Configuration"
         capability "Switch"
         capability "Refresh"
+        
         
         command "associate1"
         command "disassociate1"
@@ -50,6 +54,7 @@ metadata {
         command "associate9"
         command "disassociate9"
         
+               
         attribute "rfid1", "enum", ["associated","unassociated"]
         attribute "rfid2", "enum", ["associated","unassociated"]
         attribute "rfid3", "enum", ["associated","unassociated"]
@@ -60,6 +65,11 @@ metadata {
         attribute "rfid8", "enum", ["associated","unassociated"]
         attribute "rfid9", "enum", ["associated","unassociated"]
         
+	    attribute "lastsetby", "String"
+        attribute "webCoREPush", "String"
+        attribute "webCoRESMS", "String"
+       
+
         fingerprint mfr: "0097", prod: "6131", model: "4501"
 	}
 	
@@ -68,12 +78,17 @@ metadata {
             state "on", label: 'Away', action: "switch.off", icon: "st.nest.nest-away", backgroundColor: "#f44b42"
             state "off", label: 'Home', action: "switch.on", icon: "st.nest.nest-home", backgroundColor: "#79b821"
         }
-        valueTile(name:"battery", attribute:"device.battery", inactiveLabel: false, decoration: "flat", width: 3, height: 2) {
+        valueTile(name:"battery", attribute:"device.battery", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
 			state "battery", label:'${currentValue}% battery', unit:""
 		}
-        standardTile("refresh", "command.refresh", inactiveLabel: false, decoration: "flat", width: 3, height: 2) {
-            state "default", label:'', action:"refresh.refresh", icon:"st.secondary.refresh"
+       
+       valueTile(name:"user", attribute:"device.user", width: 2, height: 2, canChangeIcon: false) {
+           state "user", label: 'Last Set To ${currentValue}'/*, action: "user",icon: "st.security.alarm.partial"//, backgroundColor: "#bfb9b5"*/ 
         }
+       
+       standardTile("refresh", "command.refresh", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
+            state "default", label:'', action:"refresh.refresh", icon:"st.secondary.refresh"
+        }    
         standardTile(name: "Help text", decoration: "flat", width: 6, height: 2, canChangeIcon: false) {
         	state "nop", label: 'To add tags & codes, press "home" on your device and enter your master code. Then press "home" again, use the code/tag, and then click "learn" on an unused slot below. To forget a code/tag, enter your master code and click "forget".'
         }
@@ -133,15 +148,15 @@ metadata {
             state "disassociating", label:'Forgetting', icon:"st.presence.tile.presence-default", backgroundColor:"#e8dbb4", nextState: "unassociated"
         }
         
-		main "homeaway"
+        main "homeaway"
         
-		details(["homeaway", "battery", "refresh", "Help text", "rfid1", "rfid2", "rfid3", "rfid4", "rfid5", "rfid6", "rfid7", "rfid8", "rfid9"])
+		details(["homeaway",  "refresh", "user",  "battery", "Help text", "rfid1", "rfid2", "rfid3", "rfid4", "rfid5", "rfid6", "rfid7", "rfid8", "rfid9"])
 	}
     
-    preferences {
+  preferences {
     	section {
 			input title: "Master Code", description: "You need to set up a master code to use to wake up the device so you can register codes and tags with it. The master code can be up to ten characters (1,2,3 or 4 only), and should be different from any regular codes you use. Once the master code is entered, the master code timeout prevents the device immediately going back to sleep after waking up. This gives you time to register a new code, while the device is still awake. ", displayDuringSetup: false, type: "paragraph", element: "paragraph"
-            input name: "masterCode", type: "password", title: "Master Code", description: "MUST be different to any user codes.", displayDuringSetup: true
+            input name: "masterCode", type: "text", title: "Master Code", description: "MUST be different to any user codes.", displayDuringSetup: true
             input name: "masterCodeTimeout", type: "number", title: "Master Code Timeout", description: "seconds", displayDuringSetup: true
             input title: "Adding tags and codes", description: "To register a new code, press 'home' on your device and enter your master code. Immediately press 'home' again and either enter the code you want to add, or scan an RFID tag. Then press 'learn' on one of the empty slots in the main screen. You need to do this quickly, before the device goes back to sleep. To forget a code, enter your master code, and then click 'forget' on a used slot. If the device handler gets confused, wake it up with the master code and hit the 'refresh' button to reload configuration from the device.", displayDuringSetup: false, type: "paragraph", element: "paragraph"
         }
@@ -153,6 +168,23 @@ metadata {
             //input name: "setMode", type: "enum",  options: ["Normal", "Always On"], title: "Operating mode", description: "Always on will deplete battery", displayDuringSetup: false
             //input name: "factoryReset", type: "enum",  options: ["Continue without reset", "Perform factory reset"], title: "Factory Reset", description: "Will reset to factory defaults. All registered RFID tag info will be lost.", displayDuringSetup: false
             input name: "debugMode", type: "bool", title: "Debug mode", description: "Enabled detailed logging"
+            input name: "pushNotifications", type: "bool", title: "Enable Sending of Push Notifications using webCoRE Piston", description: "Enable webCoRE to send push notifications"
+            input name: "smsNotifications", type: "bool", title: "Enable Sending of SMS Notifications using webCoRE Piston", description: "Enable webCoRE to send SMS notifications"
+            input name: "dateFormat", type: "enum",  options: ["US", "UK"], title: "Date Format", description: "Date format for Last set by", defaultValue: "US", displayDuringSetup: false
+
+        }
+        section {
+           input title: "Personalise User Slots", description: "If you wish you can personalise each slot by entering a name for that user in the fields below or leave as default. The first field allows for a personalised name to be displayed if Arming or Disarming through SmartThings Dashboard or App.", displayDuringSetup: false, type: "paragraph", element: "paragraph"
+           input name: "who0", type: "text", title: "Enter Name for SmartThings Dashboard", description: "Name for SmartThings Dashboard", defaultValue: "SmartThings", displayDuringSetup: false
+           input name: "who1", type: "text", title: "Enter Name for User 1", description: "1", defaultValue: "User 1", displayDuringSetup: false
+           input name: "who2", type: "text", title: "Enter Name for User 2", description: "2", defaultValue: "User 2", displayDuringSetup: false
+	       input name: "who3", type: "text", title: "Enter Name for User 3", description: "3", defaultValue: "User 3", displayDuringSetup: false
+           input name: "who4", type: "text", title: "Enter Name for User 4", description: "4", defaultValue: "User 4", displayDuringSetup: false
+           input name: "who5", type: "text", title: "Enter Name for User 5", description: "5", defaultValue: "User 5", displayDuringSetup: false
+           input name: "who6", type: "text", title: "Enter Name for User 6", description: "6", defaultValue: "User 6", displayDuringSetup: false
+           input name: "who7", type: "text", title: "Enter Name for User 7", description: "7", defaultValue: "User 7", displayDuringSetup: false
+	       input name: "who8", type: "text", title: "Enter Name for User 8", description: "8", defaultValue: "User 8", displayDuringSetup: false
+           input name: "who9", type: "text", title: "Enter Name for User 9", description: "9", defaultValue: "User 9", displayDuringSetup: false 
         }
     }
 }
@@ -226,7 +258,6 @@ def refresh() {
 
 def configure() {
     def requests = []
-    
     if(wakeUpInterval != null) {
     	requests << zwave.wakeUpV1.wakeUpIntervalSet(seconds:wakeUpInterval*60, nodeid:zwaveHubNodeId).format()
         requests << "delay 500"
@@ -243,27 +274,47 @@ def updated() {
     return response(configure())
 }
 
-def on() {
-	if(device.currentState("switch").value == "off"){
-    	info "Switching mode to away"
-    	sendEvent(name:"switch", value: "on")
-    }
+private getDateStamp(){
+    def allFormats = [
+        UK: "HH:mm EEE MMM dd YYYY", 
+        US: "HH:mm EEE MMM dd YYYY"
+    ]
+    return new Date().format(allFormats.get(dateFormat), location.timeZone)
 }
 
+def on(){
+	def $dateStamp = getDateStamp()
+    if(device.currentState("switch").value == "off") {
+        info "Switching mode to away"
+        sendEvent(name:"switch", value: "on")
+        sendEvent(name:"webCoREPush", value: pushNotifications?"Yes":"No")
+       	sendEvent(name:"webCoRESMS", value: smsNotifications?"Yes":"No")
+        sendEvent(name:"user", value: "Away by $who0 at $dateStamp")
+        sendEvent(name:"lastsetby", value: "$who0")
+     }
+}
+
+
+
 def off() {
-	if(device.currentState("switch").value == "on"){
+	def $dateStamp = getDateStamp()
+    if(device.currentState("switch").value == "on"){
     	info "Switching mode to home"
-    	sendEvent(name:"switch", value: "off")
+        sendEvent(name:"switch", value: "off")
+		sendEvent(name:"webCoREPush", value: pushNotifications?"Yes":"No")
+       	sendEvent(name:"webCoRESMS", value: smsNotifications?"Yes":"No") 
+        sendEvent(name:"user", value: "Home by $who0 at $dateStamp")
+        sendEvent(name:"lastsetby", value: "$who0")
     }
 }
 
 def parse(String description) {
-	def result = null
+    def result = null
     def versions =  [ 0x70: 1, 0x63: 1, 0x72: 2, 0x25: 1, 0x84: 1, 0x86: 1, 0x71: 2, 0x85: 2, 0x80:1  ]
     def cmd = zwave.parse(description, versions)
-    if (cmd) {
+      if (cmd) {
         result = zwaveEvent(cmd)
-        //debug "Parsed event: ${description} / ${cmd}"
+             
     } else {
         log.error "Non-parsed event: ${description}"
     }
@@ -329,7 +380,7 @@ def zwaveEvent(physicalgraph.zwave.commands.batteryv1.BatteryReport cmd) {
 
 def zwaveEvent(physicalgraph.zwave.commands.usercodev1.UsersNumberReport  cmd) {
     state.supportedUsers = cmd.supportedUsers
-}
+   }
 
 def zwaveEvent(physicalgraph.zwave.commands.versionv1.VersionCommandClassReport cmd) { 
 	// COMMAND_CLASS_VERSION 0x86
@@ -366,25 +417,41 @@ private goToSleep(def cmds){
 
 def zwaveEvent(physicalgraph.zwave.commands.alarmv2.AlarmReport cmd) {
 	// COMMAND_CLASS_ALARM_V2 0X71
-
-	def result = []
-	if (cmd.zwaveAlarmType == 6) {
-		switch(cmd.zwaveAlarmEvent) {
+	def dateStamp = getDateStamp()
+    def uid = cmd.eventParameter.toString().substring(1,2).toInteger()
+    def userName = [who1, who2, who3, who4, who5, who6, who7, who8, who9][uid - 1]
+    log.debug "UID $uid / who6 $who6 / userName $userName"
+    if(userName == null){
+    	userName = "User $uid"
+    }
+    def result = []
+	if (cmd.zwaveAlarmType == 6) {	
+       
+       switch(cmd.zwaveAlarmEvent) {
 			case 5:
             	// Recognised user pressed "Away"
-				info "User set device to Away mode"
+				info "$userName set device to Away mode at $dateStamp"
+                sendEvent(name:"user", value: "Away by $userName at $dateStamp")
+                sendEvent(name:"webCoREPush", value: pushNotifications?"Yes":"No")
+                sendEvent(name:"webCoRESMS", value: smsNotifications?"Yes":"No")
+                sendEvent(name:"lastsetby", value: "$userName")
                 result << createEvent(name:"switch", value: "on")
-				break
+            	break
 			case 6:
-            	// Recognised user pressed "Home"
-				info "User set device to Home mode"
-                result << createEvent(name:"switch", value: "off")
-				break
+            	// Recognised user pressed "Home"				
+                info "$userName set device to Home mode at $dateStamp"
+                sendEvent(name:"user", value: "Home by $userName at $dateStamp")
+                sendEvent(name:"webCoREPush", value: pushNotifications?"Yes":"No")
+                sendEvent(name:"webCoRESMS", value: smsNotifications?"Yes":"No")
+                sendEvent(name:"lastsetby", value: "$userName")
+ 			    result << createEvent(name:"switch", value: "off")                
+                break
 			default:
 				log.warn "Received unrecognised alarm status: $cmd"
 				break
 		}
 	}
+   
     goToSleep(result)
 	return result
 }
@@ -393,7 +460,6 @@ def zwaveEvent(physicalgraph.zwave.commands.usercodev1.UserCodeReport cmd) {
 	// Zipato COMMAND_CLASS_USER_CODE_V1: 0X63
 	def result = []
     def userNumber = cmd.userIdentifier
-    
 	if (cmd.userIdStatus == UserCodeReport.USER_ID_STATUS_AVAILABLE_NOT_SET && userNumber == 0 )
 	{
     	// Turn the master code into a 10-element array
@@ -411,6 +477,7 @@ def zwaveEvent(physicalgraph.zwave.commands.usercodev1.UserCodeReport cmd) {
             // Received unrecognised code. Store it in case user wants to associate it.
             info "Received unrecognised code."
             debug "Unrecognised code is ${cmd.user}"
+            
             state.lastUnrecognisedCode = cmd.user
             result << createEvent(name:"unrecognisedCode", value: "code ${cmd.user}")
         }
@@ -420,6 +487,7 @@ def zwaveEvent(physicalgraph.zwave.commands.usercodev1.UserCodeReport cmd) {
             info "Remembering user $userNumber is set to ${cmd.user}"
             state.registeredUsers[Integer.toString(userNumber)] = cmd.user
             sendEvent(name:"rfid$userNumber", value: "associated")
+           
         }
         else if (cmd.userIdStatus == UserCodeReport.USER_ID_STATUS_AVAILABLE_NOT_SET){
             sendEvent(name:"rfid$userNumber", value: "unassociated")
