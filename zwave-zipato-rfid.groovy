@@ -54,7 +54,16 @@ metadata {
         command "associate9"
         command "disassociate9"
         
-               
+        attribute "userName1", "String"
+       	attribute "userName2", "String"
+        attribute "userName3", "String"
+        attribute "userName4", "String"
+        attribute "userName5", "String"
+        attribute "userName6", "String"
+        attribute "userName7", "String"
+        attribute "userName8", "String"
+        attribute "userName9", "String"
+        
         attribute "rfid1", "enum", ["associated","unassociated"]
         attribute "rfid2", "enum", ["associated","unassociated"]
         attribute "rfid3", "enum", ["associated","unassociated"]
@@ -82,22 +91,27 @@ metadata {
 			state "battery", label:'${currentValue}% battery', unit:""
 		}
        
-       valueTile(name:"user", attribute:"device.user", width: 2, height: 2, canChangeIcon: false) {
-           state "user", label: 'Last Set To ${currentValue}'/*, action: "user",icon: "st.security.alarm.partial"//, backgroundColor: "#bfb9b5"*/ 
+       	valueTile(name:"user", attribute:"device.user", width: 2, height: 2, canChangeIcon: false) {
+           state "user", label: 'Last Set To ${currentValue}'
         }
        
-       standardTile("refresh", "command.refresh", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
+       	standardTile("refresh", "command.refresh", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
             state "default", label:'', action:"refresh.refresh", icon:"st.secondary.refresh"
         }    
         standardTile(name: "Help text", decoration: "flat", width: 6, height: 2, canChangeIcon: false) {
         	state "nop", label: 'To add tags & codes, press "home" on your device and enter your master code. Then press "home" again, use the code/tag, and then click "learn" on an unused slot below. To forget a code/tag, enter your master code and click "forget".'
         }
-        
+        valueTile(name:"userName1", attribute:"userName1", width: 2, height: 1, decoration: "flat", canChangeIcon: false) {
+           state "nop", label: '${currentValue}'
+        }
         standardTile(name: "rfid1", attribute:"device.rfid1", width: 2, height: 2, canChangeIcon: true) {
             state "unassociated", label: 'Learn', action: "associate1", icon: "st.presence.tile.presence-default", nextState: "associating", backgroundColor: "#ed961c"
             state "associating", label:'Learning', icon:"st.presence.tile.presence-default", backgroundColor:"#b4d1e8", nextState: "associated"
             state "associated", label: 'Forget', action: "disassociate1", icon: "st.presence.tile.presence-default", nextState: "disassociating", backgroundColor: "#1c92ed"
             state "disassociating", label:'Forgetting', icon:"st.presence.tile.presence-default", backgroundColor:"#e8dbb4", nextState: "unassociated"
+        }
+        valueTile(name:"userName2", attribute:"userName2", width: 2, height: 1, decoration: "flat", canChangeIcon: false) {
+           state "nop", label: '${currentValue}'
         }
         standardTile(name: "rfid2", attribute:"device.rfid2", width: 2, height: 2, canChangeIcon: true) {
             state "unassociated", label: 'Learn', action: "associate2", icon: "st.presence.tile.presence-default", nextState: "associating", backgroundColor: "#ed961c"
@@ -105,11 +119,17 @@ metadata {
             state "associated", label: 'Forget', action: "disassociate2", icon: "st.presence.tile.presence-default", nextState: "disassociating", backgroundColor: "#1c92ed"
             state "disassociating", label:'Forgetting', icon:"st.presence.tile.presence-default", backgroundColor:"#e8dbb4", nextState: "unassociated"
         }
+        valueTile(name:"userName3", attribute:"userName4", width: 2, height: 1, decoration: "flat", canChangeIcon: false) {
+           state "nop", label: '${currentValue}'
+        }
         standardTile(name: "rfid3", attribute:"device.rfid3", width: 2, height: 2, canChangeIcon: true) {
             state "unassociated", label: 'Learn', action: "associate3", icon: "st.presence.tile.presence-default", nextState: "associating", backgroundColor: "#ed961c"
             state "associating", label:'Learning', icon:"st.presence.tile.presence-default", backgroundColor:"#b4d1e8", nextState: "associated"
             state "associated", label: 'Forget', action: "disassociate3", icon: "st.presence.tile.presence-default", nextState: "disassociating", backgroundColor: "#1c92ed"
             state "disassociating", label:'Forgetting', icon:"st.presence.tile.presence-default", backgroundColor:"#e8dbb4", nextState: "unassociated"
+        }
+        valueTile(name:"userName4", attribute:"userName4", width: 2, height: 1, decoration: "flat", canChangeIcon: false) {
+           state "nop", label: '${currentValue}'
         }
         standardTile(name: "rfid4", attribute:"device.rfid4", width: 2, height: 2, canChangeIcon: true) {
             state "unassociated", label: 'Learn', action: "associate4", icon: "st.presence.tile.presence-default", nextState: "associating", backgroundColor: "#ed961c"
@@ -117,11 +137,17 @@ metadata {
             state "associated", label: 'Forget', action: "disassociate4", icon: "st.presence.tile.presence-default", nextState: "disassociating", backgroundColor: "#1c92ed"
             state "disassociating", label:'Forgetting', icon:"st.presence.tile.presence-default", backgroundColor:"#e8dbb4", nextState: "unassociated"
         }
+        valueTile(name:"userName5", attribute:"userName5", width: 2, height: 1, decoration: "flat", canChangeIcon: false) {
+           state "nop", label: '${currentValue}'
+        }
         standardTile(name: "rfid5", attribute:"device.rfid5", width: 2, height: 2, canChangeIcon: true) {
             state "unassociated", label: 'Learn', action: "associate5", icon: "st.presence.tile.presence-default", nextState: "associating", backgroundColor: "#ed961c"
             state "associating", label:'Learning', icon:"st.presence.tile.presence-default", backgroundColor:"#b4d1e8", nextState: "associated"
             state "associated", label: 'Forget', action: "disassociate5", icon: "st.presence.tile.presence-default", nextState: "disassociating", backgroundColor: "#1c92ed"
             state "disassociating", label:'Forgetting', icon:"st.presence.tile.presence-default", backgroundColor:"#e8dbb4", nextState: "unassociated"
+        }
+        valueTile(name:"userName6", attribute:"userName6", width: 2, height: 1, decoration: "flat", canChangeIcon: false) {
+           state "nop", label: '${currentValue}'
         }
         standardTile(name: "rfid6", attribute:"device.rfid6", width: 2, height: 2, canChangeIcon: true) {
             state "unassociated", label: 'Learn', action: "associate6", icon: "st.presence.tile.presence-default", nextState: "associating", backgroundColor: "#ed961c"
@@ -129,17 +155,26 @@ metadata {
             state "associated", label: 'Forget', action: "disassociate6", icon: "st.presence.tile.presence-default", nextState: "disassociating", backgroundColor: "#1c92ed"
             state "disassociating", label:'Forgetting', icon:"st.presence.tile.presence-default", backgroundColor:"#e8dbb4", nextState: "unassociated"
         }
+        valueTile(name:"userName7", attribute:"userName7", width: 2, height: 1, decoration: "flat", canChangeIcon: false) {
+           state "nop", label: '${currentValue}'
+        }
         standardTile(name: "rfid7", attribute:"device.rfid7", width: 2, height: 2, canChangeIcon: true) {
             state "unassociated", label: 'Learn', action: "associate7", icon: "st.presence.tile.presence-default", nextState: "associating", backgroundColor: "#ed961c"
             state "associating", label:'Learning', icon:"st.presence.tile.presence-default", backgroundColor:"#b4d1e8", nextState: "associated"
             state "associated", label: 'Forget', action: "disassociate7", icon: "st.presence.tile.presence-default", nextState: "disassociating", backgroundColor: "#1c92ed"
             state "disassociating", label:'Forgetting', icon:"st.presence.tile.presence-default", backgroundColor:"#e8dbb4", nextState: "unassociated"
         }
+        valueTile(name:"userName8", attribute:"userName8", width: 2, height: 1, decoration: "flat", canChangeIcon: false) {
+           state "nop", label: '${currentValue}'
+        }
         standardTile(name: "rfid8", attribute:"device.rfid8", width: 2, height: 2, canChangeIcon: true) {
             state "unassociated", label: 'Learn', action: "associate8", icon: "st.presence.tile.presence-default", nextState: "associating", backgroundColor: "#ed961c"
             state "associating", label:'Learning', icon:"st.presence.tile.presence-default", backgroundColor:"#b4d1e8", nextState: "associated"
             state "associated", label: 'Forget', action: "disassociate8", icon: "st.presence.tile.presence-default", nextState: "disassociating", backgroundColor: "#1c92ed"
             state "disassociating", label:'Forgetting', icon:"st.presence.tile.presence-default", backgroundColor:"#e8dbb4", nextState: "unassociated"
+        }
+        valueTile(name:"userName9", attribute:"userName9", width: 2, height: 1, decoration: "flat", canChangeIcon: false) {
+           state "nop", label: '${currentValue}'
         }
         standardTile(name: "rfid9", attribute:"device.rfid9", width: 2, height: 2, canChangeIcon: true) {
             state "unassociated", label: 'Learn', action: "associate9", icon: "st.presence.tile.presence-default", nextState: "associating", backgroundColor: "#ed961c"
@@ -150,7 +185,7 @@ metadata {
         
         main "homeaway"
         
-		details(["homeaway",  "refresh", "user",  "battery", "Help text", "rfid1", "rfid2", "rfid3", "rfid4", "rfid5", "rfid6", "rfid7", "rfid8", "rfid9"])
+		details(["homeaway",  "refresh", "user",  "battery", "Help text", "userName1", "userName2", "userName3","rfid1", "rfid2",  "rfid3", "userName4", "userName5", "userName6", "rfid4",  "rfid5", "rfid6", "userName7", "userName8", "userName9", "rfid7", "rfid8",  "rfid9"])
 	}
     
   preferences {
@@ -223,6 +258,7 @@ def refresh() {
     // Reset the UI state. This will be re-updated according to reports back from the device.
     for(def i=0; i<10; i++) {
 	    sendEvent(name:"rfid$i", value: "unassociated")
+        sendEvent(name:"userName$i", value: "User $i")
     }
     
 	def requests = []
@@ -418,11 +454,10 @@ private goToSleep(def cmds){
 def zwaveEvent(physicalgraph.zwave.commands.alarmv2.AlarmReport cmd) {
 	// COMMAND_CLASS_ALARM_V2 0X71
 	def dateStamp = getDateStamp()
-    def uid = cmd.eventParameter.toString().substring(1,2).toInteger()
-    def userName = [who1, who2, who3, who4, who5, who6, who7, who8, who9][uid - 1]
-    log.debug "UID $uid / who6 $who6 / userName $userName"
+    def userNumber = cmd.eventParameter.toString().substring(1,2).toInteger()
+    def userName = [who1, who2, who3, who4, who5, who6, who7, who8, who9][userNumber - 1]
     if(userName == null){
-    	userName = "User $uid"
+    	userName = "User $userNumber"
     }
     def result = []
 	if (cmd.zwaveAlarmType == 6) {	
@@ -487,6 +522,8 @@ def zwaveEvent(physicalgraph.zwave.commands.usercodev1.UserCodeReport cmd) {
             info "Remembering user $userNumber is set to ${cmd.user}"
             state.registeredUsers[Integer.toString(userNumber)] = cmd.user
             sendEvent(name:"rfid$userNumber", value: "associated")
+            def userName = [who1, who2, who3, who4, who5, who6, who7, who8, who9][userNumber - 1]
+            sendEvent(name:"userName$userNumber", value: userName)
            
         }
         else if (cmd.userIdStatus == UserCodeReport.USER_ID_STATUS_AVAILABLE_NOT_SET){
