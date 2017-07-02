@@ -119,7 +119,7 @@ metadata {
             state "associated", label: 'Forget', action: "disassociate2", icon: "st.presence.tile.presence-default", nextState: "disassociating", backgroundColor: "#1c92ed"
             state "disassociating", label:'Forgetting', icon:"st.presence.tile.presence-default", backgroundColor:"#e8dbb4", nextState: "unassociated"
         }
-        valueTile(name:"userName3", attribute:"userName4", width: 2, height: 1, decoration: "flat", canChangeIcon: false) {
+        valueTile(name:"userName3", attribute:"userName3", width: 2, height: 1, decoration: "flat", canChangeIcon: false) {
            state "nop", label: '${currentValue}'
         }
         standardTile(name: "rfid3", attribute:"device.rfid3", width: 2, height: 2, canChangeIcon: true) {
