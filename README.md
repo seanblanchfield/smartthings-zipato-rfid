@@ -1,3 +1,5 @@
+# NOTE: This no longer works, because it is designed for the classic SmartThings App, which Samsung shut down on the 15th October 2020. A version of this appears to be available in the new SmartThings app, but it does not work correct because it is missing its main UI. I (Sean Blanchfield) have abandoned SmartThings in favor of Home Assistant.
+
 # smartthings-zipato-rfid
 Device handler for Z-Wave Zipato RFID tag reader: https://www.zipato.com/product/mini-keypad-rfid
 
